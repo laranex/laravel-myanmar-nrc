@@ -68,8 +68,6 @@ php artisan vendor:publish --tag="laravel-myanmar-nrc"
     //default values for $dbDriven & $lang will be read from config file if you do not pass the values to the method.
 ```
 
-
-
 ### Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
