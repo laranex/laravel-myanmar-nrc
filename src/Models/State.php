@@ -1,6 +1,6 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC\Models;
+namespace Laranex\LaravelMyanmarNRC\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

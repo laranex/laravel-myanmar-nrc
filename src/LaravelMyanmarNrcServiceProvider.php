@@ -1,9 +1,9 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC;
+namespace Laranex\LaravelMyanmarNRC;
 
 use Illuminate\Support\ServiceProvider;
-use laranex\LaravelMyanmarNRC\Console\SeedMyanmarNRCCommand;
+use Laranex\LaravelMyanmarNRC\Console\SeedMyanmarNRCCommand;
 
 class LaravelMyanmarNrcServiceProvider extends ServiceProvider
 {

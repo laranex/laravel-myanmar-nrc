@@ -1,6 +1,6 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC;
+namespace Laranex\LaravelMyanmarNRC;
 
 use Illuminate\Support\Facades\Facade;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC;
+namespace Laranex\LaravelMyanmarNRC;
 
 use Exception;
-use laranex\LaravelMyanmarNRC\Data\MyanmarNRCJsonHandler;
-use laranex\LaravelMyanmarNRC\Models\State;
-use laranex\LaravelMyanmarNRC\Models\Township;
-use laranex\LaravelMyanmarNRC\Models\Type;
+use Laranex\LaravelMyanmarNRC\Data\MyanmarNRCJsonHandler;
+use Laranex\LaravelMyanmarNRC\Models\State;
+use Laranex\LaravelMyanmarNRC\Models\Township;
+use Laranex\LaravelMyanmarNRC\Models\Type;
 use Str;
 
 class LaravelMyanmarNrcParser
@@ -23,7 +23,7 @@ class LaravelMyanmarNrcParser
      */
     public static function parseNRC($nrc, $dbDriven = false, $lang = null): string
     {
-        $exceptionMessage = 'Invalid NRC format';
+        $exceptionMessage = 'Invalid NRC';
 
         if (! $lang) {
             $lang = config('laravel-myanmar-nrc.locale');
@@ -40,7 +40,7 @@ class LaravelMyanmarNrcParser
 
         $nrcNumber = $nrc[3];
 
-        if (! preg_match('/^[0-9]{6}$/', strval($nrcNumber)) || Str::of($nrcNumber)->length() !== 6) {
+        if (! preg_match('/^[1-9][0-9]*$/', $nrcNumber) || Str::of($nrcNumber)->length() !== 6) {
             throw new Exception($exceptionMessage);
         }
 

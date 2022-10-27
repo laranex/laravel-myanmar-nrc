@@ -1,11 +1,11 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC\Data;
+namespace Laranex\LaravelMyanmarNRC\Data;
 
 use Illuminate\Support\Collection;
-use laranex\LaravelMyanmarNRC\Models\State;
-use laranex\LaravelMyanmarNRC\Models\Township;
-use laranex\LaravelMyanmarNRC\Models\Type;
+use Laranex\LaravelMyanmarNRC\Models\State;
+use Laranex\LaravelMyanmarNRC\Models\Township;
+use Laranex\LaravelMyanmarNRC\Models\Type;
 
 class MyanmarNRCJsonHandler
 {

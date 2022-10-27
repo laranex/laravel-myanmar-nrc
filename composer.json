@@ -1,11 +1,11 @@
 {
-    "name": "laranex/laravel-myanmar-nrc",
+    "name": "Laranex/laravel-myanmar-nrc",
     "description": "A Laravel package to deal with NRC from Myanmar",
     "keywords": [
-        "laranex",
+        "Laranex",
         "laravel-myanmar-nrc"
     ],
-    "homepage": "https://github.com/laranex/laravel-myanmar-nrc",
+    "homepage": "https://github.com/Laranex/laravel-myanmar-nrc",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -17,16 +17,16 @@
     ],
     "require": {
         "php": "^8.0.2",
-        "illuminate/support": "^9.0.0"
+        "illuminate/collections": "^9.0.0"
     },
     "autoload": {
         "psr-4": {
-            "laranex\\LaravelMyanmarNRC\\": "src"
+            "Laranex\\LaravelMyanmarNRC\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "laranex\\LaravelMyanmarNRC\\Tests\\": "tests"
+            "Laranex\\LaravelMyanmarNRC\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -39,10 +39,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "laranex\\LaravelMyanmarNRC\\LaravelMyanmarNrcServiceProvider"
+                "Laranex\\LaravelMyanmarNRC\\LaravelMyanmarNrcServiceProvider"
             ],
             "aliases": {
-                "LaravelMyanmarNrc": "laranex\\LaravelMyanmarNRC\\LaravelMyanmarNrcFacade"
+                "LaravelMyanmarNrc": "Laranex\\LaravelMyanmarNRC\\LaravelMyanmarNrcFacade"
             }
         }
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC\Rules;
+namespace Laranex\LaravelMyanmarNRC\Rules;
 
 use Illuminate\Contracts\Validation\InvokableRule;
-use laranex\LaravelMyanmarNRC\LaravelMyanmarNrc;
+use Laranex\LaravelMyanmarNRC\LaravelMyanmarNrc;
 
 class MyanmarNRC implements InvokableRule
 {

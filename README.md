@@ -1,7 +1,7 @@
 # LARAVEL MYANMAR NRC
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laranex/laravel-myanmar-nrc.svg?style=flat-square)](https://packagist.org/packages/laranex/laravel-myanmar-nrc)
-[![Total Downloads](https://img.shields.io/packagist/dt/laranex/laravel-myanmar-nrc.svg?style=flat-square)](https://packagist.org/packages/laranex/laravel-myanmar-nrc)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/Laranex/laravel-myanmar-nrc.svg?style=flat-square)](https://packagist.org/packages/Laranex/laravel-myanmar-nrc)
+[![Total Downloads](https://img.shields.io/packagist/dt/Laranex/laravel-myanmar-nrc.svg?style=flat-square)](https://packagist.org/packages/Laranex/laravel-myanmar-nrc)
 
 A Laravel package to deal with NRC from Myanmar.
 
@@ -10,7 +10,7 @@ A Laravel package to deal with NRC from Myanmar.
 You can install the package via composer:
 
 ```bash
-composer require laranex/laravel-myanmar-nrc
+composer require Laranex/laravel-myanmar-nrc
 
 #This will create required tables for handing NRC from Myanmar
 php artisan migrate
@@ -53,12 +53,12 @@ php artisan vendor:publish --tag="laravel-myanmar-nrc"
 ```php
 
     //Validation
-    new \laranex\LaravelMyanmarNRC\Rules\MyanmarNRC()
+    new \Laranex\LaravelMyanmarNRC\Rules\MyanmarNRC()
     
     //Parsing the NRC from network
-    \laranex\LaravelMyanmarNRC\LaravelMyanmarNrcFacade::parseNRC($nrc, $dbDriven, $lang)
+    \Laranex\LaravelMyanmarNRC\LaravelMyanmarNrcFacade::parseNRC($nrc, $dbDriven, $lang)
         (OR)
-    \laranex\LaravelMyanmarNRC\LaravelMyanmarNrc::parseNRC($nrc, $dbDriven, $lang)
+    \Laranex\LaravelMyanmarNRC\LaravelMyanmarNrc::parseNRC($nrc, $dbDriven, $lang)
     
     
     //$nrc represents the nrc (X-X-X-12345) from network,

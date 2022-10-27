@@ -1,13 +1,13 @@
 <?php
 
-namespace laranex\LaravelMyanmarNRC\Console;
+namespace Laranex\LaravelMyanmarNRC\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use laranex\LaravelMyanmarNRC\Data\MyanmarNRCJsonHandler;
-use laranex\LaravelMyanmarNRC\Models\State;
-use laranex\LaravelMyanmarNRC\Models\Township;
-use laranex\LaravelMyanmarNRC\Models\Type;
+use Laranex\LaravelMyanmarNRC\Data\MyanmarNRCJsonHandler;
+use Laranex\LaravelMyanmarNRC\Models\State;
+use Laranex\LaravelMyanmarNRC\Models\Township;
+use Laranex\LaravelMyanmarNRC\Models\Type;
 
 class SeedMyanmarNRCCommand extends Command
 {
