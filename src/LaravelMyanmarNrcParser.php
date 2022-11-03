@@ -45,7 +45,7 @@ class LaravelMyanmarNrcParser
         }
 
         try {
-            if (config('laravel-myanmar-nrc.db_driven', true)) {
+            if (config('laravel-myanmar-nrc.db_driven', true) || $dbDriven) {
                 $state = State::findOrFail($nrc->get(0));
                 $township = Township::findOrFail($nrc->get(1));
                 $type = Type::findOrFail($nrc->get(2));
