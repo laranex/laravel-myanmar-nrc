@@ -40,7 +40,7 @@ class LaravelMyanmarNrcParser
 
         $nrcNumber = $nrc[3];
 
-        if (! preg_match('/^[1-9]|[0-9]*$/', $nrcNumber) || Str::of($nrcNumber)->length() !== 6) {
+        if (! preg_match('/^[0-9]{6}$/', $nrcNumber)) {
             throw new Exception($exceptionMessage);
         }
 
