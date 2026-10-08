@@ -1,4 +1,3 @@
-laravel: '@testbench'
 
 providers:
   - Laranex\LaravelMyanmarNRC\MyanmarNrcServiceProvider
