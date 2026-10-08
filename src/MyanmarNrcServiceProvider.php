@@ -43,7 +43,13 @@ class MyanmarNrcServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadMigrationsFrom(dirname(__DIR__).'/database/migrations');
+        $migrations = $this->migrations();
+        $unpublished = array_keys(array_filter($migrations, fn (?string $published): bool => $published === null));
+
+        if ($unpublished !== []) {
+            $this->loadMigrationsFrom($unpublished);
+        }
+
         $this->loadTranslationsFrom(dirname(__DIR__).'/lang', 'laravel-myanmar-nrc');
 
         if (! $this->app->runningInConsole()) {
@@ -61,6 +67,36 @@ class MyanmarNrcServiceProvider extends ServiceProvider
         $this->publishes([
             dirname(__DIR__).'/lang' => $this->app->langPath('vendor/laravel-myanmar-nrc'),
         ], ['laravel-myanmar-nrc', 'laravel-myanmar-nrc-lang']);
+
+        $timestamp = date('Y_m_d_His');
+
+        $this->publishes(array_map(
+            fn (string $source): string => $migrations[$source] ?? $this->app->databasePath('migrations/'.$timestamp.'_'.basename($source)),
+            array_combine(array_keys($migrations), array_keys($migrations)),
+        ), ['laravel-myanmar-nrc', 'laravel-myanmar-nrc-migrations']);
+    }
+
+    /**
+     * The package migrations, each mapped to the copy the application has
+     * already published (or null).
+     *
+     * A published migration replaces the package one, so "vendor:publish"
+     * followed by "migrate" never creates a table twice, and publishing
+     * again reuses the existing copies.
+     *
+     * @return array<string, string|null>
+     */
+    private function migrations(): array
+    {
+        $migrations = [];
+
+        foreach (['create_nrc_states_table.php', 'create_nrc_townships_table.php', 'nrc_types_table.php'] as $file) {
+            $published = glob($this->app->databasePath('migrations/*_'.$file));
+
+            $migrations[dirname(__DIR__).'/database/migrations/'.$file] = is_array($published) && $published !== [] ? $published[0] : null;
+        }
+
+        return $migrations;
     }
 
     private function config(Container $app, string $key, mixed $default = null): mixed

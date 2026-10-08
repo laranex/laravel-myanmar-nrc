@@ -19,7 +19,9 @@ There is no v3.0.0: every Laranex package moved to v4.0.0 together, so this rele
 - `json_file` defaults to `null` (the bundled file). The old `'nrc.json'` value still means the bundled file.
 - Model relationships are `State::townships()` and `Township::state()` (were `nrcTownships()` and `nrcTownship()`); `id`, `code` and `nrc_state_id` are cast to integers.
 - The validation rule `Laranex\LaravelMyanmarNRC\Rules\MyanmarNRC` accepts an optional `dbDriven` constructor argument and lets the host application override its message through the usual custom-messages array.
-- Publish tags: `laravel-myanmar-nrc` (everything), `laravel-myanmar-nrc-config` and `laravel-myanmar-nrc-lang`.
+- Publish tags: `laravel-myanmar-nrc` (everything), `laravel-myanmar-nrc-config`, `laravel-myanmar-nrc-lang` and `laravel-myanmar-nrc-migrations` (new). The migrations are published with a timestamp; once published, the package stops loading its own copies and publishing again reuses them.
+- `isValid()` and the validation rule ignore the `locale` config, so an unsupported value there never makes validation throw `UnsupportedLocaleException`; only `parse()` reads it.
+- `isValid()` only turns `InvalidNrcException` into `false`; database errors (e.g. a missing NRC table) now surface instead of being swallowed as in v2.
 
 ### Upgrading
 - Require `laranex/laravel-myanmar-nrc:^4.0` and make sure the application runs PHP 8.1+ on Laravel 10 or newer.

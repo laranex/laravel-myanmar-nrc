@@ -61,3 +61,11 @@ it('lets the host application override the message', function () {
 
     expect($validator->errors()->first('nrc'))->toBe('Custom message');
 });
+
+it('validates regardless of a misconfigured locale', function () {
+    config()->set('laravel-myanmar-nrc.locale', 'fr');
+    $this->reloadNrc();
+
+    expect(Validator::make(['nrc' => '12-284-1-123456'], ['nrc' => new MyanmarNRC])->passes())->toBeTrue()
+        ->and(Validator::make(['nrc' => '12-1-1-123456'], ['nrc' => new MyanmarNRC])->fails())->toBeTrue();
+});
