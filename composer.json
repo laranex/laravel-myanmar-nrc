@@ -1,7 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laranex/laravel-myanmar-nrc",
-    "description": "Validate and parse Myanmar NRC numbers in English and Myanmar, backed by the database or a bundled JSON file",
+    "description": "Myanmar NRC for Laravel: validate, parse and format NRC numbers in English and Myanmar.",
     "keywords": [
         "laravel",
         "laranex",
