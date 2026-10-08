@@ -1,0 +1,15 @@
+parameters:
+    level: 7
+    phpVersion: 80100
+    paths:
+        - src
+        - config
+        - database
+    tmpDir: build/phpstan
+    configDirectories:
+        - config
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Larastan 2 (PHP 8.1 lane) knows one relation template type, Larastan 3 two.
+        - '#specifies 2 template types, but class Illuminate\\Database\\Eloquent\\Relations\\(HasMany|BelongsTo) supports only 1#'
+        - '#should return Illuminate\\Database\\Eloquent\\Relations\\(HasMany|BelongsTo)<.+, \$this\(.+\)> but returns#'
