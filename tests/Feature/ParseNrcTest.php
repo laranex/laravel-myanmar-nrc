@@ -95,3 +95,13 @@ it('only formats in English or Myanmar', function () {
 it('lists its languages', function () {
     expect(Nrc::locales())->toBe(['en', 'mm']);
 });
+
+it('validates regardless of a misconfigured locale', function () {
+    config()->set('laravel-myanmar-nrc.locale', 'fr');
+    $this->reloadNrc();
+
+    expect(MyanmarNrc::isValid('12-284-1-123456'))->toBeTrue()
+        ->and(MyanmarNrc::isValid('12-1-1-123456'))->toBeFalse()
+        ->and(MyanmarNrc::parse('12-284-1-123456', lang: 'en'))->toBe('12/DAGAYA(N)123456')
+        ->and(fn () => MyanmarNrc::parse('12-284-1-123456'))->toThrow(UnsupportedLocaleException::class);
+});

@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laranex\LaravelMyanmarNRC\Console\Commands\SeedMyanmarNrcCommand;
 use Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc;
 use Laranex\LaravelMyanmarNRC\MyanmarNrc as Nrc;
+use Laranex\LaravelMyanmarNRC\MyanmarNrcServiceProvider;
 use Laranex\LaravelMyanmarNRC\Repositories\DatabaseNrcRepository;
 use Laranex\LaravelMyanmarNRC\Repositories\JsonNrcRepository;
 
@@ -63,5 +65,60 @@ it('publishes the config and translations under their tags', function () {
         ->toBe([$root.'/config/laravel-myanmar-nrc.php' => config_path('laravel-myanmar-nrc.php')])
         ->and(ServiceProvider::pathsToPublish(null, 'laravel-myanmar-nrc-lang'))
         ->toBe([$root.'/lang' => lang_path('vendor/laravel-myanmar-nrc')])
-        ->and(ServiceProvider::pathsToPublish(null, 'laravel-myanmar-nrc'))->toHaveCount(2);
+        ->and(ServiceProvider::pathsToPublish(null, 'laravel-myanmar-nrc'))->toHaveCount(5);
+});
+
+/**
+ * Point the app at a private database directory and re-register the provider,
+ * so parallel test processes never see each other's published migrations.
+ */
+function isolatedDatabasePath(): string
+{
+    $path = sys_get_temp_dir().'/laravel-myanmar-nrc-'.bin2hex(random_bytes(6));
+    File::ensureDirectoryExists($path.'/migrations');
+    app()->useDatabasePath($path);
+
+    return $path;
+}
+
+it('publishes the migrations with a timestamp and reuses them on the next publish', function () {
+    $path = isolatedDatabasePath();
+    (new MyanmarNrcServiceProvider(app()))->boot();
+
+    $this->artisan('vendor:publish', ['--tag' => 'laravel-myanmar-nrc-migrations', '--no-interaction' => true])->assertExitCode(0);
+
+    $first = File::files($path.'/migrations');
+    $files = ['create_nrc_states_table.php', 'create_nrc_townships_table.php', 'nrc_types_table.php'];
+
+    expect($first)->toHaveCount(3);
+
+    foreach ($files as $index => $file) {
+        expect($first[$index]->getFilename())->toMatch('/^\d{4}_\d{2}_\d{2}_\d{6}_'.preg_quote($file, '/').'$/')
+            ->and($first[$index]->getContents())->toBe(File::get(__DIR__.'/../../database/migrations/'.$file));
+    }
+
+    (new MyanmarNrcServiceProvider(app()))->boot();
+    $this->artisan('vendor:publish', ['--tag' => 'laravel-myanmar-nrc-migrations', '--no-interaction' => true])->assertExitCode(0);
+
+    expect(array_map(fn (SplFileInfo $file): string => $file->getFilename(), File::files($path.'/migrations')))
+        ->toBe(array_map(fn (SplFileInfo $file): string => $file->getFilename(), $first));
+
+    File::deleteDirectory($path);
+});
+
+it('stops loading the migrations the application has published', function () {
+    $path = isolatedDatabasePath();
+    File::copy(__DIR__.'/../../database/migrations/create_nrc_states_table.php', $path.'/migrations/2020_01_01_000000_create_nrc_states_table.php');
+
+    $migrator = app('migrator');
+    $paths = new ReflectionProperty($migrator, 'paths');
+    $paths->setAccessible(true);
+    $paths->setValue($migrator, []);
+
+    (new MyanmarNrcServiceProvider(app()))->boot();
+
+    File::deleteDirectory($path);
+
+    expect(array_map(fn (string $path): string => basename($path), $migrator->paths()))
+        ->toBe(['create_nrc_townships_table.php', 'nrc_types_table.php']);
 });

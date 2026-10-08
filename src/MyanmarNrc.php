@@ -6,6 +6,9 @@ namespace Laranex\LaravelMyanmarNRC;
 
 use Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException;
 use Laranex\LaravelMyanmarNRC\Exceptions\UnsupportedLocaleException;
+use Laranex\LaravelMyanmarNRC\Models\State;
+use Laranex\LaravelMyanmarNRC\Models\Township;
+use Laranex\LaravelMyanmarNRC\Models\Type;
 use Laranex\LaravelMyanmarNRC\Repositories\NrcRepository;
 
 class MyanmarNrc
@@ -45,6 +48,43 @@ class MyanmarNrc
             throw UnsupportedLocaleException::for($lang);
         }
 
+        [$state, $township, $type, $number] = $this->resolve($nrc, $dbDriven);
+
+        if ($lang === 'mm') {
+            return sprintf('%s/%s(%s)%s', $state->code_mm, $township->code_mm, $type->code_mm, $this->toMyanmarDigits($number));
+        }
+
+        return sprintf('%d/%s(%s)%s', $state->code, $township->code, $type->code, $number);
+    }
+
+    /**
+     * Determine whether an id based NRC refers to a real state, township and type.
+     *
+     * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
+     */
+    public function isValid(string $nrc, ?bool $dbDriven = null): bool
+    {
+        try {
+            $this->resolve($nrc, $dbDriven);
+
+            return true;
+        } catch (InvalidNrcException) {
+            return false;
+        }
+    }
+
+    /**
+     * Look up the state, township and type an id based NRC refers to.
+     *
+     * Independent of the output language, so a misconfigured "locale" never
+     * affects validation.
+     *
+     * @return array{0: State, 1: Township, 2: Type, 3: string}
+     *
+     * @throws InvalidNrcException
+     */
+    private function resolve(string $nrc, ?bool $dbDriven): array
+    {
         $segments = explode('-', trim($nrc));
 
         if (count($segments) !== 4) {
@@ -67,27 +107,7 @@ class MyanmarNrc
             throw InvalidNrcException::for($nrc);
         }
 
-        if ($lang === 'mm') {
-            return sprintf('%s/%s(%s)%s', $state->code_mm, $township->code_mm, $type->code_mm, $this->toMyanmarDigits($number));
-        }
-
-        return sprintf('%d/%s(%s)%s', $state->code, $township->code, $type->code, $number);
-    }
-
-    /**
-     * Determine whether an id based NRC refers to a real state, township and type.
-     *
-     * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
-     */
-    public function isValid(string $nrc, ?bool $dbDriven = null): bool
-    {
-        try {
-            $this->parse($nrc, $dbDriven);
-
-            return true;
-        } catch (InvalidNrcException) {
-            return false;
-        }
+        return [$state, $township, $type, $number];
     }
 
     /**
