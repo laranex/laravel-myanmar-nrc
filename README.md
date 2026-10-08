@@ -36,7 +36,7 @@ php artisan vendor:publish --tag="laravel-myanmar-nrc-config"
 php artisan vendor:publish --tag="laravel-myanmar-nrc-lang"
 ```
 
-To customise the tables, publish the migrations before running `migrate` (`--tag="laravel-myanmar-nrc-migrations"`); the package then stops loading its own copies. Don't publish them in an application that already ran the package migrations.
+To customize the tables, publish the migrations before running `migrate` (`--tag="laravel-myanmar-nrc-migrations"`); the package then stops loading its own copies. Don't publish them in an application that already ran the package migrations.
 
 The config holds three keys: `locale` (`en` or `mm`, the default output language of `parse()`; validation ignores it), `json_file` (`null` for the bundled data file, or the path of your own copy) and `db_driven` (`true` to read from the database, `false` to read the JSON file directly, with no database needed).
 

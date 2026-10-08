@@ -20,7 +20,7 @@ Use this skill when a Laravel application collects, validates or displays Myanma
 ### 1. Choose the backend
 
 - database (default, `db_driven => true`): run `php artisan migrate` (the package registers its migrations) and `php artisan mm-nrc:seed` to fill `nrc_states`, `nrc_townships` and `nrc_types`; re-run the seed command after changing the data file
-- to customise the tables, publish the migrations before the first `migrate`: `php artisan vendor:publish --tag="laravel-myanmar-nrc-migrations"` (the package then skips its own copies); never publish them in an app that already ran the package migrations
+- to customize the tables, publish the migrations before the first `migrate`: `php artisan vendor:publish --tag="laravel-myanmar-nrc-migrations"` (the package then skips its own copies); never publish them in an app that already ran the package migrations
 - JSON (`db_driven => false`): nothing to migrate or seed, the file is read on first use
 - publish the config only when a key must change: `php artisan vendor:publish --tag="laravel-myanmar-nrc-config"`; keys are `locale` (`en`|`mm`), `json_file` (`null` for the bundled file or a path) and `db_driven`
 
