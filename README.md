@@ -62,6 +62,13 @@ MyanmarNrc::parse('12-284-1-123456', dbDriven: false);
 
 `parse()` throws `Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException` for an unknown or mismatched NRC. The validation message is translated through the `laravel-myanmar-nrc::validation.invalid` key (English and Myanmar are bundled). Build the pick lists for your forms from the `State`, `Township` and `Type` models or from the bundled [NRC data](resources/data/nrc.json).
 
+## Built for humans and AI agents
+
+The documentation is written for developers, and the package ships an agent skill so AI coding agents use it the way it's meant to be used.
+
+- **Laravel Boost** installs the skill automatically: run `php artisan boost:install` (or `boost:update`).
+- **Any other agent** (Claude Code, Codex, Cursor and others): `npx skills add laranex/laravel-myanmar-nrc`.
+
 ## Testing
 
 ```bash
