@@ -23,6 +23,10 @@ There is no v3.0.0: every Laranex package moved to v4.0.0 together, so this rele
 - `isValid()` and the validation rule ignore the `locale` config, so an unsupported value there never makes validation throw `UnsupportedLocaleException`; only `parse()` reads it.
 - `isValid()` only turns `InvalidNrcException` into `false`; database errors (e.g. a missing NRC table) now surface instead of being swallowed as in v2.
 
+### Fixed
+- NRC data: Myanmar codes and names use the letter `ဝ` instead of the Myanmar digit zero `၀` (e.g. `ပဝန`, `ဝမန`, `ကလဝ`, `ဧရာဝတီ`), and stray zero-width characters, Zawgyi-ordered text and a trailing letter were removed.
+- NRC data: townships that carried another township's code now carry their own. Kachin `11` is `KAMANA`/`ကမန` (Kamee) and `16` (Kamaing) is `KAMATA`/`ကမတ`, `20` (Sinbo) is `SABANA`; Rakhine `267` (Maungdaw) is `MATANA`/`မတန` and `268` (Ponnagyun) is `PANAKA`/`ပဏက`; Shan `344` (Pangyang) is `PAYANA`/`ပယန` and `405` (Mongnawng) is `MANATA`/`မနတ`. The ids are unchanged, so stored NRCs keep validating; re-run `php artisan mm-nrc:seed` to update the tables.
+
 ### Upgrading
 - Require `laranex/laravel-myanmar-nrc:^4.0` and make sure the application runs PHP 8.1+ on Laravel 10 or newer.
 - Replace `LaravelMyanmarNrc::parseNRC($nrc, $dbDriven, $lang)` / `LaravelMyanmarNrcFacade::parseNRC(...)` with `MyanmarNrc::parse($nrc, $dbDriven, $lang)` and `(new LaravelMyanmarNrc)->isValidMyanmarNRC($nrc)` with `MyanmarNrc::isValid($nrc)`, importing `Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc`. Update any `LaravelMyanmarNrc` alias usage to `MyanmarNrc`.

@@ -89,3 +89,24 @@ it('ignores unknown keys and keeps only scalar values', function () {
         unlink($file);
     }
 });
+
+it('ships clean Myanmar text', function () {
+    $repository = new JsonNrcRepository;
+    $rows = [...$repository->types(), ...$repository->townships()];
+
+    foreach ($rows as $row) {
+        expect((string) $row['code'])->toMatch('/^[A-Z]+$/')
+            // Myanmar letters and signs only: no Myanmar digits (e.g. "၀" mistaken for the letter "ဝ")
+            ->and((string) $row['code_mm'])->toMatch('/^[\x{1000}-\x{103F}]+$/u');
+    }
+
+    foreach ([...$rows, ...$repository->states()] as $row) {
+        foreach (['code', 'code_mm', 'name', 'name_mm'] as $key) {
+            expect((string) $row[$key])->not->toMatch('/[\x{200B}-\x{200D}\x{FEFF}]/u')
+                ->and((string) $row[$key])->toBe(trim((string) $row[$key]));
+        }
+
+        // Stored in Unicode order: a word never starts with the "ေ" vowel sign
+        expect((string) $row['name_mm'])->not->toMatch('/(^|[\s(])\x{1031}/u');
+    }
+});
