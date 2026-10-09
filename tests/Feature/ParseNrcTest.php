@@ -43,6 +43,21 @@ it('gives the same answer from both backends for every type', function (string $
     'sa' => ['6', 'PALANA(S)', 'ပလန(စ)'],
 ]);
 
+it('formats townships with their own codes', function (string $nrc, string $en, string $mm) {
+    expect(MyanmarNrc::parse($nrc))->toBe($en)
+        ->and(MyanmarNrc::parse($nrc, false))->toBe($en)
+        ->and(MyanmarNrc::parse($nrc, lang: 'mm'))->toBe($mm)
+        ->and(MyanmarNrc::parse($nrc, false, 'mm'))->toBe($mm);
+})->with([
+    'the Myanmar letter wa, not the digit zero' => ['1-7-1-123456', '1/PAWANA(N)123456', '၁/ပဝန(နိုင်)၁၂၃၄၅၆'],
+    'Kamaing' => ['1-16-1-123456', '1/KAMATA(N)123456', '၁/ကမတ(နိုင်)၁၂၃၄၅၆'],
+    'Sinbo' => ['1-20-1-123456', '1/SABANA(N)123456', '၁/ဆဘန(နိုင်)၁၂၃၄၅၆'],
+    'Maungdaw' => ['11-267-1-123456', '11/MATANA(N)123456', '၁၁/မတန(နိုင်)၁၂၃၄၅၆'],
+    'Ponnagyun' => ['11-268-1-123456', '11/PANAKA(N)123456', '၁၁/ပဏက(နိုင်)၁၂၃၄၅၆'],
+    'Pangyang' => ['13-344-1-123456', '13/PAYANA(N)123456', '၁၃/ပယန(နိုင်)၁၂၃၄၅၆'],
+    'Mongnawng' => ['13-405-1-123456', '13/MANATA(N)123456', '၁၃/မနတ(နိုင်)၁၂၃၄၅၆'],
+]);
+
 it('reads the default language and backend from the config', function () {
     config()->set('laravel-myanmar-nrc.locale', 'mm');
     config()->set('laravel-myanmar-nrc.db_driven', false);
