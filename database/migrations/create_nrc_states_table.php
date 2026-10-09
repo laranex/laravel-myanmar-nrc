@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('nrc_states', function (Blueprint $table): void {
             $table->id();
             $table->integer('code');
-            $table->string('code_mm');
+            $table->string('code_my');
             $table->string('name');
-            $table->string('name_mm');
+            $table->string('name_my');
             $table->timestamps();
         });
     }

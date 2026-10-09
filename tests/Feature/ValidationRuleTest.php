@@ -24,7 +24,7 @@ it('fails an invalid NRC with the English message', function () {
 });
 
 it('translates the message when the app runs in Myanmar', function () {
-    app()->setLocale('mm');
+    app()->setLocale('my');
 
     $validator = Validator::make(['nrc' => 'not-an-nrc'], ['nrc' => new MyanmarNRC]);
 

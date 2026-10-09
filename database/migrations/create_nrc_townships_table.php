@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('nrc_state_id');
             $table->string('code');
-            $table->string('code_mm');
+            $table->string('code_my');
             $table->string('name');
-            $table->string('name_mm');
+            $table->string('name_my');
             $table->timestamps();
         });
     }

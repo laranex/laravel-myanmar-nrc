@@ -19,21 +19,21 @@ it('parses an NRC in English from the database', function () {
 });
 
 it('parses an NRC in Myanmar from the database', function () {
-    expect(MyanmarNrc::parse('12-284-1-123456', lang: 'mm'))->toBe('၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆');
+    expect(MyanmarNrc::parse('12-284-1-123456', lang: 'my'))->toBe('၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆');
 });
 
 it('parses an NRC from the JSON file when asked to', function () {
     Schema::drop('nrc_states');
 
     expect(MyanmarNrc::parse('12-284-1-123456', dbDriven: false))->toBe('12/DAGAYA(N)123456')
-        ->and(MyanmarNrc::parse('1-1-2-000001', false, 'mm'))->toBe('၁/ဟပန(ဧည့်)၀၀၀၀၀၁');
+        ->and(MyanmarNrc::parse('1-1-2-000001', false, 'my'))->toBe('၁/ဟပန(ဧည့်)၀၀၀၀၀၁');
 });
 
 it('gives the same answer from both backends for every type', function (string $type, string $en, string $mm) {
     expect(MyanmarNrc::parse("13-331-{$type}-987654", true))->toBe("13/{$en}987654")
         ->and(MyanmarNrc::parse("13-331-{$type}-987654", false))->toBe("13/{$en}987654")
-        ->and(MyanmarNrc::parse("13-331-{$type}-987654", true, 'mm'))->toBe("၁၃/{$mm}၉၈၇၆၅၄")
-        ->and(MyanmarNrc::parse("13-331-{$type}-987654", false, 'mm'))->toBe("၁၃/{$mm}၉၈၇၆၅၄");
+        ->and(MyanmarNrc::parse("13-331-{$type}-987654", true, 'my'))->toBe("၁၃/{$mm}၉၈၇၆၅၄")
+        ->and(MyanmarNrc::parse("13-331-{$type}-987654", false, 'my'))->toBe("၁၃/{$mm}၉၈၇၆၅၄");
 })->with([
     'naing' => ['1', 'PALANA(N)', 'ပလန(နိုင်)'],
     'ae' => ['2', 'PALANA(E)', 'ပလန(ဧည့်)'],
@@ -46,8 +46,8 @@ it('gives the same answer from both backends for every type', function (string $
 it('formats townships with their own codes', function (string $nrc, string $en, string $mm) {
     expect(MyanmarNrc::parse($nrc))->toBe($en)
         ->and(MyanmarNrc::parse($nrc, false))->toBe($en)
-        ->and(MyanmarNrc::parse($nrc, lang: 'mm'))->toBe($mm)
-        ->and(MyanmarNrc::parse($nrc, false, 'mm'))->toBe($mm);
+        ->and(MyanmarNrc::parse($nrc, lang: 'my'))->toBe($mm)
+        ->and(MyanmarNrc::parse($nrc, false, 'my'))->toBe($mm);
 })->with([
     'the Myanmar letter wa, not the digit zero' => ['1-7-1-123456', '1/PAWANA(N)123456', '၁/ပဝန(နိုင်)၁၂၃၄၅၆'],
     'Kamaing' => ['1-16-1-123456', '1/KAMATA(N)123456', '၁/ကမတ(နိုင်)၁၂၃၄၅၆'],
@@ -59,7 +59,7 @@ it('formats townships with their own codes', function (string $nrc, string $en, 
 ]);
 
 it('reads the default language and backend from the config', function () {
-    config()->set('laravel-myanmar-nrc.locale', 'mm');
+    config()->set('laravel-myanmar-nrc.locale', 'my');
     config()->set('laravel-myanmar-nrc.db_driven', false);
     $this->reloadNrc();
 
@@ -105,10 +105,14 @@ it('accepts the NRC types and townships it knows', function () {
 
 it('only formats in English or Myanmar', function () {
     MyanmarNrc::parse('12-284-1-123456', lang: 'fr');
-})->throws(UnsupportedLocaleException::class, 'Unsupported NRC locale [fr]. Only en and mm are allowed.');
+})->throws(UnsupportedLocaleException::class, 'Unsupported NRC locale [fr]. Only en and my are allowed.');
+
+it('uses the ISO 639-1 code for Burmese, with no mm alias', function () {
+    MyanmarNrc::parse('12-284-1-123456', lang: 'mm');
+})->throws(UnsupportedLocaleException::class, 'Unsupported NRC locale [mm]. Only en and my are allowed.');
 
 it('lists its languages', function () {
-    expect(Nrc::locales())->toBe(['en', 'mm']);
+    expect(Nrc::locales())->toBe(['en', 'my']);
 });
 
 it('validates regardless of a misconfigured locale', function () {
