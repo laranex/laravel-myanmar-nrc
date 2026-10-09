@@ -23,7 +23,7 @@ it('hydrates models from the JSON rows', function () {
 
     expect($repository->state(12))->toBeInstanceOf(State::class)->id->toBe(12)->code->toBe(12)->name->toBe('YANGON')
         ->and($repository->township(284))->toBeInstanceOf(Township::class)->code->toBe('DAGAYA')->nrc_state_id->toBe(12)
-        ->and($repository->type(1))->toBeInstanceOf(Type::class)->code->toBe('N')->code_mm->toBe('နိုင်')
+        ->and($repository->type(1))->toBeInstanceOf(Type::class)->code->toBe('N')->code_my->toBe('နိုင်')
         ->and($repository->state(99))->toBeNull()
         ->and($repository->township(0))->toBeNull()
         ->and($repository->type(7))->toBeNull();
@@ -39,7 +39,7 @@ it('ships consistent data', function () {
         ->and(array_unique(array_column($repository->townships(), 'nrc_state_id')))->toHaveCount(15);
 
     foreach ($repository->townships() as $township) {
-        expect($township)->toHaveKeys(['id', 'nrc_state_id', 'code', 'code_mm', 'name', 'name_mm'])
+        expect($township)->toHaveKeys(['id', 'nrc_state_id', 'code', 'code_my', 'name', 'name_my'])
             ->and($township['nrc_state_id'])->toBeIn($stateIds);
     }
 });
@@ -75,15 +75,15 @@ it('rejects a file without types and states', function (string $json) {
 it('ignores unknown keys and keeps only scalar values', function () {
     $file = (string) tempnam(sys_get_temp_dir(), 'nrc');
     file_put_contents($file, json_encode([
-        'types' => [['id' => 1, 'code' => 'N', 'code_mm' => 'နိုင်', 'name' => 'N', 'name_mm' => 'နိုင်', 'extra' => [1]]],
-        'states' => [['id' => 1, 'code' => 1, 'code_mm' => '၁', 'name' => 'A', 'name_mm' => 'က', 'townships' => 'oops']],
+        'types' => [['id' => 1, 'code' => 'N', 'code_my' => 'နိုင်', 'name' => 'N', 'name_my' => 'နိုင်', 'extra' => [1]]],
+        'states' => [['id' => 1, 'code' => 1, 'code_my' => '၁', 'name' => 'A', 'name_my' => 'က', 'townships' => 'oops']],
     ]));
 
     try {
         $repository = new JsonNrcRepository($file);
 
-        expect($repository->types())->toBe([['id' => 1, 'code' => 'N', 'code_mm' => 'နိုင်', 'name' => 'N', 'name_mm' => 'နိုင်']])
-            ->and($repository->states())->toBe([['id' => 1, 'code' => 1, 'code_mm' => '၁', 'name' => 'A', 'name_mm' => 'က']])
+        expect($repository->types())->toBe([['id' => 1, 'code' => 'N', 'code_my' => 'နိုင်', 'name' => 'N', 'name_my' => 'နိုင်']])
+            ->and($repository->states())->toBe([['id' => 1, 'code' => 1, 'code_my' => '၁', 'name' => 'A', 'name_my' => 'က']])
             ->and($repository->townships())->toBe([]);
     } finally {
         unlink($file);
@@ -97,16 +97,16 @@ it('ships clean Myanmar text', function () {
     foreach ($rows as $row) {
         expect((string) $row['code'])->toMatch('/^[A-Z]+$/')
             // Myanmar letters and signs only: no Myanmar digits (e.g. "၀" mistaken for the letter "ဝ")
-            ->and((string) $row['code_mm'])->toMatch('/^[\x{1000}-\x{103F}]+$/u');
+            ->and((string) $row['code_my'])->toMatch('/^[\x{1000}-\x{103F}]+$/u');
     }
 
     foreach ([...$rows, ...$repository->states()] as $row) {
-        foreach (['code', 'code_mm', 'name', 'name_mm'] as $key) {
+        foreach (['code', 'code_my', 'name', 'name_my'] as $key) {
             expect((string) $row[$key])->not->toMatch('/[\x{200B}-\x{200D}\x{FEFF}]/u')
                 ->and((string) $row[$key])->toBe(trim((string) $row[$key]));
         }
 
         // Stored in Unicode order: a word never starts with the "ေ" vowel sign
-        expect((string) $row['name_mm'])->not->toMatch('/(^|[\s(])\x{1031}/u');
+        expect((string) $row['name_my'])->not->toMatch('/(^|[\s(])\x{1031}/u');
     }
 });

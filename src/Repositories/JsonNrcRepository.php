@@ -158,16 +158,16 @@ class JsonNrcRepository implements NrcRepository
         $townships = [];
 
         foreach ($data['types'] as $type) {
-            $types[] = $this->row($type, ['id', 'code', 'code_mm', 'name', 'name_mm']);
+            $types[] = $this->row($type, ['id', 'code', 'code_my', 'name', 'name_my']);
         }
 
         foreach ($data['states'] as $state) {
-            $states[] = $this->row($state, ['id', 'code', 'code_mm', 'name', 'name_mm']);
+            $states[] = $this->row($state, ['id', 'code', 'code_my', 'name', 'name_my']);
 
             $stateTownships = is_array($state) && is_array($state['townships'] ?? null) ? $state['townships'] : [];
 
             foreach ($stateTownships as $township) {
-                $row = $this->row($township, ['id', 'code', 'code_mm', 'name', 'name_mm']);
+                $row = $this->row($township, ['id', 'code', 'code_my', 'name', 'name_my']);
                 $row['nrc_state_id'] = (int) ($states[count($states) - 1]['id'] ?? 0);
 
                 $townships[] = $row;

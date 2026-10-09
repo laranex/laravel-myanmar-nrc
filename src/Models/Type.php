@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $code
- * @property string $code_mm
+ * @property string $code_my
  * @property string $name
- * @property string $name_mm
+ * @property string $name_my
  */
 class Type extends Model
 {
@@ -27,7 +27,7 @@ class Type extends Model
      *
      * @var list<string>
      */
-    protected $fillable = ['code', 'code_mm', 'name', 'name_mm'];
+    protected $fillable = ['code', 'code_my', 'name', 'name_my'];
 
     /**
      * The attributes that should be cast.

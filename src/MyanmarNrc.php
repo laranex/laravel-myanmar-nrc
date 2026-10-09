@@ -27,7 +27,7 @@ class MyanmarNrc
      */
     public static function locales(): array
     {
-        return ['en', 'mm'];
+        return ['en', 'my'];
     }
 
     /**
@@ -35,7 +35,7 @@ class MyanmarNrc
      * human readable form, e.g. "12/DAGAYA(N)123456" or "၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆".
      *
      * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
-     * @param  string|null  $lang  "en" or "mm"; defaults to the "locale" config value.
+     * @param  string|null  $lang  "en" or "my"; defaults to the "locale" config value.
      *
      * @throws InvalidNrcException
      * @throws UnsupportedLocaleException
@@ -50,8 +50,8 @@ class MyanmarNrc
 
         [$state, $township, $type, $number] = $this->resolve($nrc, $dbDriven);
 
-        if ($lang === 'mm') {
-            return sprintf('%s/%s(%s)%s', $state->code_mm, $township->code_mm, $type->code_mm, $this->toMyanmarDigits($number));
+        if ($lang === 'my') {
+            return sprintf('%s/%s(%s)%s', $state->code_my, $township->code_my, $type->code_my, $this->toMyanmarDigits($number));
         }
 
         return sprintf('%d/%s(%s)%s', $state->code, $township->code, $type->code, $number);

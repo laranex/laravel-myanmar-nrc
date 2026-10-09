@@ -45,7 +45,7 @@ it('runs the package migrations', function () {
     expect(Schema::hasTable('nrc_states'))->toBeTrue()
         ->and(Schema::hasTable('nrc_townships'))->toBeTrue()
         ->and(Schema::hasTable('nrc_types'))->toBeTrue()
-        ->and(Schema::hasColumns('nrc_townships', ['id', 'nrc_state_id', 'code', 'code_mm', 'name', 'name_mm']))->toBeTrue();
+        ->and(Schema::hasColumns('nrc_townships', ['id', 'nrc_state_id', 'code', 'code_my', 'name', 'name_my']))->toBeTrue();
 });
 
 it('registers the seed command', function () {
@@ -55,7 +55,7 @@ it('registers the seed command', function () {
 
 it('loads the translations in both languages', function () {
     expect(trans('laravel-myanmar-nrc::validation.invalid'))->toBe('The :attribute is not valid.')
-        ->and(trans('laravel-myanmar-nrc::validation.invalid', [], 'mm'))->toBe('မှတ်ပုံတင်သည် အကျုံးမဝင်ပါ။');
+        ->and(trans('laravel-myanmar-nrc::validation.invalid', [], 'my'))->toBe('မှတ်ပုံတင်သည် အကျုံးမဝင်ပါ။');
 });
 
 it('publishes the config and translations under their tags', function () {

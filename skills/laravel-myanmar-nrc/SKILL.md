@@ -47,7 +47,7 @@ php artisan vendor:publish --tag="laravel-myanmar-nrc-lang"
 
 `config/laravel-myanmar-nrc.php`:
 
-- `locale`: `en` (default) or `mm`, the default output language of `parse()`; validation ignores it.
+- `locale`: `en` (default) or `my`, the default output language of `parse()`; validation ignores it.
 - `json_file`: `null` for the bundled data file, or the path of your own copy (e.g. `storage_path('nrc.json')`); it feeds `mm-nrc:seed` and the JSON backend.
 - `db_driven`: `true` (default) reads the database tables, `false` reads the JSON file.
 
@@ -74,17 +74,17 @@ The message uses the `laravel-myanmar-nrc::validation.invalid` translation key (
 use Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc;
 
 MyanmarNrc::parse('12-284-1-123456');                  // "12/DAGAYA(N)123456"
-MyanmarNrc::parse('12-284-1-123456', lang: 'mm');      // "၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆"
+MyanmarNrc::parse('12-284-1-123456', lang: 'my');      // "၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆"
 MyanmarNrc::parse('12-284-1-123456', dbDriven: false); // read the JSON file
 MyanmarNrc::isValid('12-1-1-123456');                  // false: township 1 is not in state 12
 ```
 
-- `parse()` throws `Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException` (an `InvalidArgumentException`) for a malformed, unknown or mismatched NRC, and `UnsupportedLocaleException` for a language other than `en` or `mm`.
+- `parse()` throws `Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException` (an `InvalidArgumentException`) for a malformed, unknown or mismatched NRC, and `UnsupportedLocaleException` for a language other than `en` or `my`.
 - `isValid()` returns a bool and never throws for bad input (database errors still throw).
 
 ### Build form pick lists
 
-- Database: the Eloquent models `Laranex\LaravelMyanmarNRC\Models\State` (`townships()` relation), `Township` (`state()` relation, `nrc_state_id`) and `Type`, each with `code`, `code_mm`, `name` and `name_mm`.
+- Database: the Eloquent models `Laranex\LaravelMyanmarNRC\Models\State` (`townships()` relation), `Township` (`state()` relation, `nrc_state_id`) and `Type`, each with `code`, `code_my`, `name` and `name_my`.
 - JSON: `app(\Laranex\LaravelMyanmarNRC\Repositories\JsonNrcRepository::class)->states()`, `->townships()` and `->types()`.
 
 ## Test your app

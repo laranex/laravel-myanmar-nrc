@@ -10,7 +10,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The language a parsed NRC is formatted in when none is passed to the
-    | parser. "en" gives "12/DAGAYA(N)123456", "mm" gives the Myanmar form.
+    | parser. "en" gives "12/DAGAYA(N)123456", "my" gives the Myanmar form.
     |
     */
 

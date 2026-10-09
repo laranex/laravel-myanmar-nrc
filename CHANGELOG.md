@@ -22,6 +22,7 @@ There is no v3.0.0: every Laranex package moved to v4.0.0 together, so this rele
 - Publish tags: `laravel-myanmar-nrc` (everything), `laravel-myanmar-nrc-config`, `laravel-myanmar-nrc-lang` and `laravel-myanmar-nrc-migrations` (new). The migrations are published with a timestamp; once published, the package stops loading its own copies and publishing again reuses them.
 - `isValid()` and the validation rule ignore the `locale` config, so an unsupported value there never makes validation throw `UnsupportedLocaleException`; only `parse()` reads it.
 - `isValid()` only turns `InvalidNrcException` into `false`; database errors (e.g. a missing NRC table) now surface instead of being swallowed as in v2.
+- Burmese uses the ISO 639-1 code `my` instead of `mm` everywhere: the `locale` config value and the `parse()` `$lang` argument (`MyanmarNrc::locales()` is `['en', 'my']`; `mm` now throws `UnsupportedLocaleException`), the translations (`lang/my`), the JSON data keys and the database columns and model attributes (`code_my` and `name_my`, were `code_mm` and `name_mm`). There is no `mm` alias. NRC ids are unchanged and the `mm-nrc:seed` command keeps its name.
 
 ### Fixed
 - NRC data: Myanmar codes and names use the letter `ဝ` instead of the Myanmar digit zero `၀` (e.g. `ပဝန`, `ဝမန`, `ကလဝ`, `ဧရာဝတီ`), and stray zero-width characters, Zawgyi-ordered text and a trailing letter were removed.
@@ -34,7 +35,8 @@ There is no v3.0.0: every Laranex package moved to v4.0.0 together, so this rele
 - If you registered the provider manually, point it at `Laranex\LaravelMyanmarNRC\MyanmarNrcServiceProvider`.
 - Rename `nrcTownships()` / `nrcTownship()` calls on the models to `townships()` / `state()`.
 - If you referenced `Data\MyanmarNRCJsonHandler`, resolve `Repositories\JsonNrcRepository` from the container instead; its `types()`, `states()` and `townships()` return the rows as arrays.
-- The migrations keep their file names, so existing installations do not need to migrate again. Re-run `php artisan mm-nrc:seed` once to refresh the data.
+- Replace `'mm'` with `'my'` in the `locale` config, `parse()` calls and any published translations (`lang/vendor/laravel-myanmar-nrc/mm` becomes `my`), and `code_mm`/`name_mm` with `code_my`/`name_my` in your code and custom JSON file.
+- The migrations keep their file names, so they do not run again on existing installations. Rename the `code_mm`/`name_mm` columns of `nrc_states`, `nrc_townships` and `nrc_types` to `code_my`/`name_my` with a migration of your own (see the Upgrading page), update any published copies of the package migrations, then re-run `php artisan mm-nrc:seed` once to refresh the data.
 
 ## 2.0.0
 

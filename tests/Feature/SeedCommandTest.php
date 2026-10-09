@@ -15,14 +15,14 @@ it('seeds the NRC tables from the bundled JSON file', function () {
     expect(Type::query()->count())->toBe(6)
         ->and(State::query()->count())->toBe(15)
         ->and(Township::query()->count())->toBe(471)
-        ->and(State::query()->find(12))->name->toBe('YANGON')->name_mm->toBe('ရန်ကုန်')->code->toBe(12)->code_mm->toBe('၁၂')
+        ->and(State::query()->find(12))->name->toBe('YANGON')->name_my->toBe('ရန်ကုန်')->code->toBe(12)->code_my->toBe('၁၂')
         ->and(Township::query()->find(284))->code->toBe('DAGAYA')->nrc_state_id->toBe(12)
-        ->and(Type::query()->find(1))->code->toBe('N')->code_mm->toBe('နိုင်');
+        ->and(Type::query()->find(1))->code->toBe('N')->code_my->toBe('နိုင်');
 });
 
 it('replaces the existing rows instead of duplicating them', function () {
     $this->artisan('mm-nrc:seed')->assertSuccessful();
-    State::query()->create(['code' => 99, 'code_mm' => '၉၉', 'name' => 'STALE', 'name_mm' => 'STALE']);
+    State::query()->create(['code' => 99, 'code_my' => '၉၉', 'name' => 'STALE', 'name_my' => 'STALE']);
 
     $this->artisan('mm-nrc:seed')->assertSuccessful();
 
@@ -34,10 +34,10 @@ it('replaces the existing rows instead of duplicating them', function () {
 it('seeds from a custom JSON file', function () {
     $file = tempnam(sys_get_temp_dir(), 'nrc');
     file_put_contents((string) $file, json_encode([
-        'types' => [['id' => 1, 'code' => 'N', 'code_mm' => 'နိုင်', 'name' => 'N', 'name_mm' => 'နိုင်']],
+        'types' => [['id' => 1, 'code' => 'N', 'code_my' => 'နိုင်', 'name' => 'N', 'name_my' => 'နိုင်']],
         'states' => [[
-            'id' => 1, 'code' => 1, 'code_mm' => '၁', 'name' => 'TEST', 'name_mm' => 'စမ်း',
-            'townships' => [['id' => 1, 'code' => 'TATA', 'code_mm' => 'တတ', 'name' => 'TEST', 'name_mm' => 'စမ်း']],
+            'id' => 1, 'code' => 1, 'code_my' => '၁', 'name' => 'TEST', 'name_my' => 'စမ်း',
+            'townships' => [['id' => 1, 'code' => 'TATA', 'code_my' => 'တတ', 'name' => 'TEST', 'name_my' => 'စမ်း']],
         ]],
     ]));
     config()->set('laravel-myanmar-nrc.json_file', $file);
