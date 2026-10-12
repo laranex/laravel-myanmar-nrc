@@ -11,6 +11,9 @@ use Laranex\LaravelMyanmarNRC\MyanmarNrc as Nrc;
 
 /**
  * Validates an id based NRC ("stateId-townshipId-typeId-123456").
+ *
+ * Zero-padded ids and surrounding whitespace pass, so store the value from
+ * MyanmarNrc::normalize() ("12-284-1-123456") rather than the raw input.
  */
 class MyanmarNRC implements ValidationRule
 {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc as Nrc;
 use Laranex\LaravelMyanmarNRC\Rules\MyanmarNRC;
 
 beforeEach(function (): void {
@@ -68,4 +69,11 @@ it('validates regardless of a misconfigured locale', function () {
 
     expect(Validator::make(['nrc' => '12-284-1-123456'], ['nrc' => new MyanmarNRC])->passes())->toBeTrue()
         ->and(Validator::make(['nrc' => '12-1-1-123456'], ['nrc' => new MyanmarNRC])->fails())->toBeTrue();
+});
+
+it('accepts zero-padded ids, which normalize to the stored form', function () {
+    $validator = Validator::make(['nrc' => '012-0284-01-123456'], ['nrc' => new MyanmarNRC]);
+
+    expect($validator->passes())->toBeTrue()
+        ->and(Nrc::normalize('012-0284-01-123456'))->toBe('12-284-1-123456');
 });

@@ -124,3 +124,26 @@ it('validates regardless of a misconfigured locale', function () {
         ->and(MyanmarNrc::parse('12-284-1-123456', lang: 'en'))->toBe('12/DAGAYA(N)123456')
         ->and(fn () => MyanmarNrc::parse('12-284-1-123456'))->toThrow(UnsupportedLocaleException::class);
 });
+
+it('normalizes every spelling of an NRC to one canonical form', function (string $nrc, string $canonical) {
+    expect(MyanmarNrc::normalize($nrc))->toBe($canonical)
+        ->and(MyanmarNrc::normalize($nrc, false))->toBe($canonical)
+        ->and(MyanmarNrc::normalize($canonical))->toBe($canonical)
+        ->and(MyanmarNrc::isValid($nrc))->toBeTrue()
+        ->and(MyanmarNrc::parse($nrc))->toBe(MyanmarNrc::parse($canonical))
+        ->and(MyanmarNrc::parse($nrc, lang: 'my'))->toBe(MyanmarNrc::parse($canonical, lang: 'my'));
+})->with([
+    'already canonical' => ['1-1-1-123456', '1-1-1-123456'],
+    'zero-padded ids' => ['01-001-1-123456', '1-1-1-123456'],
+    'every id padded' => ['012-0284-01-123456', '12-284-1-123456'],
+    'surrounding whitespace' => [" 12-284-1-123456\n", '12-284-1-123456'],
+    'the number keeps its zeros' => ['015-0471-06-000001', '15-471-6-000001'],
+]);
+
+it('refuses to normalize an invalid NRC', function (string $nrc) {
+    expect(fn () => MyanmarNrc::normalize($nrc))->toThrow(InvalidNrcException::class, "Invalid NRC [{$nrc}].");
+})->with([
+    'malformed' => ['12/DAGAYA(N)123456'],
+    'zero-padded state zero' => ['00-284-1-123456'],
+    'township from another state' => ['012-001-1-123456'],
+]);

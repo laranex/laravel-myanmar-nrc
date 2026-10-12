@@ -9,6 +9,7 @@ use Laranex\LaravelMyanmarNRC\Repositories\NrcRepository;
 
 /**
  * @method static string parse(string $nrc, ?bool $dbDriven = null, ?string $lang = null)
+ * @method static string normalize(string $nrc, ?bool $dbDriven = null)
  * @method static bool isValid(string $nrc, ?bool $dbDriven = null)
  * @method static NrcRepository repository(?bool $dbDriven = null)
  *

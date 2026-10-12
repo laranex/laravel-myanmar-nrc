@@ -68,6 +68,14 @@ $request->validate(['nrc' => ['required', new MyanmarNRC(dbDriven: false)]]);
 
 The message uses the `laravel-myanmar-nrc::validation.invalid` translation key (English and Myanmar bundled). Publish the `laravel-myanmar-nrc-lang` tag to change it.
 
+Validation also accepts zero-padded ids and surrounding whitespace (`012-0284-01-123456`), so store the canonical form, not the raw input; otherwise unique checks can miss duplicates:
+
+```php
+use Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc;
+
+$user->nrc = MyanmarNrc::normalize($validated['nrc']); // "12-284-1-123456"
+```
+
 ### Format for display
 
 ```php
@@ -77,9 +85,10 @@ MyanmarNrc::parse('12-284-1-123456');                  // "12/DAGAYA(N)123456"
 MyanmarNrc::parse('12-284-1-123456', lang: 'my');      // "၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆"
 MyanmarNrc::parse('12-284-1-123456', dbDriven: false); // read the JSON file
 MyanmarNrc::isValid('12-1-1-123456');                  // false: township 1 is not in state 12
+MyanmarNrc::normalize('012-0284-01-123456');           // "12-284-1-123456"
 ```
 
-- `parse()` throws `Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException` (an `InvalidArgumentException`) for a malformed, unknown or mismatched NRC, and `UnsupportedLocaleException` for a language other than `en` or `my`.
+- `parse()` and `normalize()` throw `Laranex\LaravelMyanmarNRC\Exceptions\InvalidNrcException` (an `InvalidArgumentException`) for a malformed, unknown or mismatched NRC; `parse()` also throws `UnsupportedLocaleException` for a language other than `en` or `my`.
 - `isValid()` returns a bool and never throws for bad input (database errors still throw).
 
 ### Build form pick lists
@@ -102,6 +111,7 @@ With `RefreshDatabase`, seed in each test (or set `laravel-myanmar-nrc.db_driven
 
 ## Avoid
 
-- Storing or validating the human readable form (`12/DAGAYA(N)123456`); the package validates and parses only the id based form. Store the id form and format on display.
+- Storing or validating the human readable form (`12/DAGAYA(N)123456`); the package validates and parses only the id based form. Store the id form from `normalize()` and format on display.
+- Storing the raw input: `01-001-1-123456` and `1-1-1-123456` are the same NRC.
 - Filling the tables with your own inserts; `mm-nrc:seed` truncates and reloads all three tables so the ids match the data file. Re-run it after changing `json_file`.
 - Publishing the migrations after they already ran.

@@ -34,6 +34,9 @@ class MyanmarNrc
      * Parse an id based NRC ("stateId-townshipId-typeId-123456") into its
      * human readable form, e.g. "12/DAGAYA(N)123456" or "၁၂/ဒဂရ(နိုင်)၁၂၃၄၅၆".
      *
+     * Every spelling of the same NRC ("01-284-01-123456", "12-284-1-123456")
+     * gives the same output.
+     *
      * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
      * @param  string|null  $lang  "en" or "my"; defaults to the "locale" config value.
      *
@@ -58,7 +61,29 @@ class MyanmarNrc
     }
 
     /**
+     * Normalize an id based NRC to its canonical form, the one to store.
+     *
+     * Surrounding whitespace and leading zeros in the state, township and
+     * type ids are dropped ("01-001-1-123456" and " 1-1-1-123456 " both
+     * become "1-1-1-123456"), so equal NRCs are equal strings and unique
+     * checks work. The six digit number keeps its zeros.
+     *
+     * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
+     *
+     * @throws InvalidNrcException
+     */
+    public function normalize(string $nrc, ?bool $dbDriven = null): string
+    {
+        [$state, $township, $type, $number] = $this->resolve($nrc, $dbDriven);
+
+        return sprintf('%d-%d-%d-%s', $state->id, $township->id, $type->id, $number);
+    }
+
+    /**
      * Determine whether an id based NRC refers to a real state, township and type.
+     *
+     * Leading zeros in the ids and surrounding whitespace are accepted; use
+     * normalize() to get the canonical form before storing or comparing.
      *
      * @param  bool|null  $dbDriven  Use the database (true) or the JSON file (false); defaults to the "db_driven" config value.
      */
