@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laranex\LaravelMyanmarNRC\Console\Commands\ClearMyanmarNrcCacheCommand;
 use Laranex\LaravelMyanmarNRC\Console\Commands\SeedMyanmarNrcCommand;
 use Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc;
 use Laranex\LaravelMyanmarNRC\MyanmarNrc as Nrc;
@@ -18,6 +19,12 @@ it('merges the default config', function () {
         'locale' => 'en',
         'json_file' => null,
         'db_driven' => true,
+        'cache' => [
+            'enabled' => true,
+            'store' => null,
+            'key' => 'laravel-myanmar-nrc',
+            'ttl' => null,
+        ],
     ]);
 });
 
@@ -48,9 +55,10 @@ it('runs the package migrations', function () {
         ->and(Schema::hasColumns('nrc_townships', ['id', 'nrc_state_id', 'code', 'code_my', 'name', 'name_my']))->toBeTrue();
 });
 
-it('registers the seed command', function () {
+it('registers the seed and clear-cache commands', function () {
     expect(Artisan::all())->toHaveKey('mm-nrc:seed')
-        ->and(Artisan::all()['mm-nrc:seed'])->toBeInstanceOf(SeedMyanmarNrcCommand::class);
+        ->and(Artisan::all()['mm-nrc:seed'])->toBeInstanceOf(SeedMyanmarNrcCommand::class)
+        ->and(Artisan::all()['mm-nrc:clear-cache'])->toBeInstanceOf(ClearMyanmarNrcCacheCommand::class);
 });
 
 it('loads the translations in both languages', function () {

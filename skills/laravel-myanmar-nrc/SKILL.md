@@ -50,6 +50,7 @@ php artisan vendor:publish --tag="laravel-myanmar-nrc-lang"
 - `locale`: `en` (default) or `my`, the default output language of `parse()`; validation ignores it.
 - `json_file`: `null` for the bundled data file, or the path of your own copy (e.g. `storage_path('nrc.json')`); it feeds `mm-nrc:seed` and the JSON backend.
 - `db_driven`: `true` (default) reads the database tables, `false` reads the JSON file.
+- `cache`: the database backend reads the three tables once per process and stores them in a Laravel cache: `enabled` (`true`; `false` keeps them in memory only), `store` (`null` for the default store), `key` (`laravel-myanmar-nrc`) and `ttl` (`null` for forever, or seconds).
 
 ## Use
 
@@ -114,4 +115,5 @@ With `RefreshDatabase`, seed in each test (or set `laravel-myanmar-nrc.db_driven
 - Storing or validating the human readable form (`12/DAGAYA(N)123456`); the package validates and parses only the id based form. Store the id form from `normalize()` and format on display.
 - Storing the raw input: `01-001-1-123456` and `1-1-1-123456` are the same NRC.
 - Filling the tables with your own inserts; `mm-nrc:seed` truncates and reloads all three tables so the ids match the data file. Re-run it after changing `json_file`.
+- Editing the NRC tables without running `php artisan mm-nrc:clear-cache` afterwards (`mm-nrc:seed` clears the cache itself); long-running workers (Octane, queues) keep their in-memory copy until they restart.
 - Publishing the migrations after they already ran.

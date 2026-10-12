@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Laranex\LaravelMyanmarNRC\Models\State;
 use Laranex\LaravelMyanmarNRC\Models\Township;
 use Laranex\LaravelMyanmarNRC\Models\Type;
+use Laranex\LaravelMyanmarNRC\Repositories\DatabaseNrcRepository;
 use Laranex\LaravelMyanmarNRC\Repositories\JsonNrcRepository;
 
 class SeedMyanmarNrcCommand extends Command
@@ -30,7 +31,7 @@ class SeedMyanmarNrcCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(JsonNrcRepository $json): int
+    public function handle(JsonNrcRepository $json, DatabaseNrcRepository $database): int
     {
         $this->info(sprintf('Loading NRC data from [%s].', $json->path()));
 
@@ -59,6 +60,8 @@ class SeedMyanmarNrcCommand extends Command
         foreach (array_chunk($townships, 100) as $chunk) {
             Township::query()->insert($chunk);
         }
+
+        $database->flush();
 
         $this->info(sprintf('Seeded %d types, %d states and %d townships.', count($types), count($states), count($townships)));
 

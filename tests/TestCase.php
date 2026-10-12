@@ -6,6 +6,7 @@ namespace Laranex\LaravelMyanmarNRC\Tests;
 
 use Laranex\LaravelMyanmarNRC\MyanmarNrc;
 use Laranex\LaravelMyanmarNRC\MyanmarNrcServiceProvider;
+use Laranex\LaravelMyanmarNRC\Repositories\DatabaseNrcRepository;
 use Laranex\LaravelMyanmarNRC\Repositories\JsonNrcRepository;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -46,6 +47,7 @@ abstract class TestCase extends Orchestra
     {
         $this->app->forgetInstance(MyanmarNrc::class);
         $this->app->forgetInstance(JsonNrcRepository::class);
+        $this->app->forgetInstance(DatabaseNrcRepository::class);
         \Laranex\LaravelMyanmarNRC\Facades\MyanmarNrc::clearResolvedInstances();
     }
 }

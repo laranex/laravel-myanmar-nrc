@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Laranex\LaravelMyanmarNRC;
 
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
+use Laranex\LaravelMyanmarNRC\Console\Commands\ClearMyanmarNrcCacheCommand;
 use Laranex\LaravelMyanmarNRC\Console\Commands\SeedMyanmarNrcCommand;
 use Laranex\LaravelMyanmarNRC\Repositories\DatabaseNrcRepository;
 use Laranex\LaravelMyanmarNRC\Repositories\JsonNrcRepository;
@@ -20,7 +22,19 @@ class MyanmarNrcServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(dirname(__DIR__).'/config/laravel-myanmar-nrc.php', 'laravel-myanmar-nrc');
 
-        $this->app->singleton(DatabaseNrcRepository::class);
+        $this->app->singleton(DatabaseNrcRepository::class, function (Container $app): DatabaseNrcRepository {
+            $store = $this->config($app, 'cache.store');
+            $key = $this->config($app, 'cache.key');
+            $ttl = $this->config($app, 'cache.ttl');
+
+            return new DatabaseNrcRepository(
+                cache: $this->config($app, 'cache.enabled', true)
+                    ? $app->make(CacheFactory::class)->store(is_string($store) && $store !== '' ? $store : null)
+                    : null,
+                key: is_string($key) && $key !== '' ? $key : 'laravel-myanmar-nrc',
+                ttl: is_numeric($ttl) ? (int) $ttl : null,
+            );
+        });
 
         $this->app->singleton(JsonNrcRepository::class, fn (Container $app): JsonNrcRepository => new JsonNrcRepository(
             JsonNrcRepository::resolvePath($this->config($app, 'json_file')),
@@ -58,6 +72,7 @@ class MyanmarNrcServiceProvider extends ServiceProvider
 
         $this->commands([
             SeedMyanmarNrcCommand::class,
+            ClearMyanmarNrcCacheCommand::class,
         ]);
 
         $this->publishes([
